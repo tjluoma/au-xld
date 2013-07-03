@@ -33,6 +33,10 @@ USE_GROWL='yes'
 	# edit if needed
 PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/opt/X11/bin:/bin"
 
+	# if you would like fewer diagnostic messages, set VERBOSE=no instead of
+	# VERBOSE='yes'
+VERBOSE='yes'
+
 NAME="$0:t:r"
 
 # !! APPDIR= must be set above this line!!
@@ -42,6 +46,12 @@ NAME="$0:t:r"
 	# Home page: http://tmkk.undo.jp/xld/index_e.html
 	# Sparkle Feed: http://xld.googlecode.com/svn/appcast/xld-appcast_e.xml
 RSS='http://xld.googlecode.com/svn/appcast/xld-appcast_e.xml'
+
+
+zmodload zsh/datetime
+
+# TS = time stamp
+ts () { strftime %Y-%m-%d--%H.%M.%S "$EPOCHSECONDS"' }
 
 ####|####|####|####|####|####|####|####|####|####|####|####|####|####|####
 #
@@ -54,7 +64,7 @@ INSTALLED_VERSION=$(fgrep -A1 CFBundleShortVersionString "${APPPATH}/Contents/In
 
 if [[ "$INSTALLED_VERSION" == "$LATEST_VERSION" ]]
 then
-		[[ "$VERBOSE" == "yes" ]] && echo "	$NAME: $APPPATH is up to date"
+		[[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: $APPPATH is up to date at `ts`"
 
 		exit 0
 fi
@@ -80,7 +90,7 @@ fi
 #		Mount the DMG
 #
 
-[[ "$VERBOSE" == "yes" ]] && echo "	$NAME: attempting to mount $FILENAME"
+[[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: attempting to mount $FILENAME at `ts`"
 
 MNTPNT=$(echo -n "Y" | hdid -plist "$FILENAME" 2>/dev/null | fgrep '/Volumes/' | sed 's#</string>##g ; s#.*<string>##g')
 
@@ -136,13 +146,13 @@ do
 
 		((COUNT++))
 
-		[[ "$VERBOSE" == "yes" ]] && echo "	$NAME: $APPNAME ($PID) is running at `date`"
+		[[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: $APPNAME ($PID) is running at `ts`"
 
 		if [ "$COUNT" -gt "10" ]
 		then
 					# if we loop more than 10 times, quit
 
-				[[ "$VERBOSE" == "yes" ]] && echo "	$NAME: $APPNAME failed to quit after $COUNT tries"
+				[[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: $APPNAME failed to quit after $COUNT tries at `ts`"
 				exit 1
 
 		elif [ "$COUNT" -gt "5" ]
@@ -185,7 +195,7 @@ fi
 #		install via ditto
 #
 
-[[ "$VERBOSE" == "yes" ]] && echo "	$NAME: copying $MNTPNT/$APPPATH:t to $APPDIR/$APPPATH:t"
+[[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: copying $MNTPNT/$APPPATH:t to $APPDIR/$APPPATH:t at `ts`"
 
 ditto -v "$MNTPNT/$APPPATH:t" "$APPDIR/$APPPATH:t"
 
@@ -194,10 +204,10 @@ EXIT="$?"
 if [[ "$EXIT" == "0" ]]
 then
 
-		[[ "$VERBOSE" == "yes" ]] && echo "	$NAME: SUCCESS"
+		[[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: SUCCESS installing $APPDIR/$APPPATH:t via ditto at `ts`"
 else
 		# failed
-		echo "$NAME: ditto failed"
+		echo "$NAME: ditto failed at `ts`"
 
 		exit 1
 fi
@@ -207,7 +217,25 @@ fi
 #		Unmount DMG
 #
 
-[[ -d "$MNTPNT" ]] && diskutil eject "$MNTPNT"
+
+if [[ -d "$MNTPNT" ]]
+then
+
+	[[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: trying to eject $MNTPNT:"
+
+	diskutil eject "$MNTPNT"
+
+fi
+
+####|####|####|####|####|####|####|####|####|####|####|####|####|####|####
+#
+#		Move $FILENAME to ~/.Trash/. That way we'll know it was installed
+#		so we don't manually install it too, but if we do need it for
+#		something (i.e. to copy to another computer without downloading it
+#		again) we'll still have it accessible.
+#
+
+mv -f "$FILENAME" "$TRASH" && [[ "$VERBOSE" == "yes" ]] && echo "	$NAME: Moved $FILENAME to $TRASH"
 
 ####|####|####|####|####|####|####|####|####|####|####|####|####|####|####
 #
@@ -232,6 +260,8 @@ then
 
 fi # Growl is running
 
+[[ "$VERBOSE" == "yes" ]] &&  echo "$NAME Successfully installed/updated at `ts`"
+
 ####|####|####|####|####|####|####|####|####|####|####|####|####|####|####
 #
 #		Restart the app IFF it was running and we caused it to quit
@@ -240,6 +270,8 @@ fi # Growl is running
 if [ "$WAS_RUNNING" = "yes" ]
 then
 		# If the app was running and we made it quit, restart it now
+
+		[[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: launching $APPPATH at `ts`"
 
 		open "$APPPATH" || exit 1
 fi

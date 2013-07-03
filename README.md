@@ -73,6 +73,6 @@ YOU ASSUME 100% OF ANY AND ALL RISK, LIABILITY, HARDSHIP, INCONVENIENCE and/or I
 
 [LaunchControl]: http://www.soma-zone.com/LaunchControl/
 
-[com.tjluoma.au-xld.plist]: https://github.com/tjluoma/au-xld/com.tjluoma.au-xld.plist
+[com.tjluoma.au-xld.plist]: https://github.com/tjluoma/au-xld/blob/master/com.tjluoma.au-xld.plist
 
-[au-xld.sh]: https://github.com/tjluoma/au-xld/au-xld.sh
+[au-xld.sh]: https://github.com/tjluoma/au-xld/blob/master/au-xld.sh

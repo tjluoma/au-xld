@@ -55,6 +55,12 @@ YOU ASSUME 100% OF ANY AND ALL RISK, LIABILITY, HARDSHIP, INCONVENIENCE and/or I
 * Have you logged out and/or rebooted since you installed the files?
 
 
+## How to install ##
+
+1. Download [install-au-xld.sh] 
+2. chmod 755 install-au-xld.sh
+3. ./install-au-xld.sh
+4. Follow prompts
 
 ## How to Uninstall
 
@@ -76,3 +82,5 @@ YOU ASSUME 100% OF ANY AND ALL RISK, LIABILITY, HARDSHIP, INCONVENIENCE and/or I
 [com.tjluoma.au-xld.plist]: https://github.com/tjluoma/au-xld/blob/master/com.tjluoma.au-xld.plist
 
 [au-xld.sh]: https://github.com/tjluoma/au-xld/blob/master/au-xld.sh
+
+[install-au-xld.sh]: https://github.com/tjluoma/au-xld/blob/master/install-au-xld.sh

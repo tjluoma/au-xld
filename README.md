@@ -1,10 +1,10 @@
-# au (Automatic Update) for XLD (Lossless audio decoder for Mac OS X)
+# au (Automatically Update) XLD
 
 ## Why?
 
-[XLD] is frequently updated, which means that there are new versions to download frequently. Although the app has [Sparkle] support, that still involves an interruption.
+[XLD] (a lossless audio decoder for Mac OS X) is frequently updated, which means that there are new versions to download frequently. Although the app has [Sparkle] support, that still involves an interruption.
 
-Instead of that, I would rather have my apps update themselves automatically overnight when I am not using them, so I don't have to worry about dealing with updates myself.
+Rather than have to wait for that to happen when I'm ready to do something, I would rather have my apps update themselves automatically overnight when I am not using them, so I don't have to worry about dealing with updates myself.
 
 ## What?
 

@@ -57,9 +57,9 @@ YOU ASSUME 100% OF ANY AND ALL RISK, LIABILITY, HARDSHIP, INCONVENIENCE and/or I
 
 ## How to install ##
 
-1. Download [install-au-xld.sh] 
-2. chmod 755 install-au-xld.sh
-3. ./install-au-xld.sh
+1. Download [install-au-xld.command]
+2. chmod 755 install-au-xld.command
+3. ./install-au-xld.command
 4. Follow prompts
 
 ## How to Uninstall
@@ -83,4 +83,4 @@ YOU ASSUME 100% OF ANY AND ALL RISK, LIABILITY, HARDSHIP, INCONVENIENCE and/or I
 
 [au-xld.sh]: https://github.com/tjluoma/au-xld/blob/master/au-xld.sh
 
-[install-au-xld.sh]: https://github.com/tjluoma/au-xld/blob/master/install-au-xld.sh
+[install-au-xld.command]: https://github.com/tjluoma/au-xld/blob/master/install-au-xld.command

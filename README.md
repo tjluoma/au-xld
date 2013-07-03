@@ -2,7 +2,7 @@
 
 ## Why?
 
-[XLD] (a lossless audio decoder for Mac OS X) is frequently updated, which means that there are new versions to download frequently. Although the app has [Sparkle] support, that still involves an interruption.
+[XLD] -- a lossless audio decoder for Mac OS X --  is frequently updated, which means that there are new versions to download frequently. Although the app has [Sparkle] support, that still involves an interruption.
 
 Rather than have to wait for that to happen when I'm ready to do something, I would rather have my apps update themselves automatically overnight when I am not using them, so I don't have to worry about dealing with updates myself.
 

@@ -45,13 +45,13 @@ NAME="$0:t:r"
 
 	# Home page: http://tmkk.undo.jp/xld/index_e.html
 	# Sparkle Feed: http://xld.googlecode.com/svn/appcast/xld-appcast_e.xml
-RSS='http://xld.googlecode.com/svn/appcast/xld-appcast_e.xml'
-
+# RSS='http://xld.googlecode.com/svn/appcast/xld-appcast_e.xml'	# This is old. Very old.
+RSS='https://svn.code.sf.net/p/xld/code/appcast/xld-appcast_e.xml'
 
 zmodload zsh/datetime
 
 # TS = time stamp
-ts () { strftime %Y-%m-%d--%H.%M.%S "$EPOCHSECONDS"' }
+ts () { strftime %Y-%m-%d--%H.%M.%S "$EPOCHSECONDS" }
 
 ####|####|####|####|####|####|####|####|####|####|####|####|####|####|####
 #

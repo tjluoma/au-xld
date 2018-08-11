@@ -31,7 +31,7 @@ USE_GROWL='yes'
 #
 
 	# edit if needed
-PATH="/usr/local/sbin:/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/opt/X11/bin:/bin"
+PATH="/usr/local/bin:/usr/bin:/usr/sbin:/sbin:/opt/X11/bin:/bin"
 
 	# if you would like fewer diagnostic messages, set VERBOSE=no instead of
 	# VERBOSE='yes'
@@ -58,13 +58,13 @@ ts () { strftime %Y-%m-%d--%H.%M.%S "$EPOCHSECONDS" }
 #		Check installed version vs newest available
 #
 
-LATEST_VERSION=$(curl -sL "$RSS" | fgrep 'sparkle:shortVersionString' | sed 's#.*parkle:shortVersionString="##g; s#".*##g')
+LATEST_VERSION=$(curl -sfL "$RSS" | fgrep 'sparkle:shortVersionString' | sed 's#.*parkle:shortVersionString="##g; s#".*##g')
 
 INSTALLED_VERSION=$(fgrep -A1 CFBundleShortVersionString "${APPPATH}/Contents/Info.plist" 2>/dev/null | tr -dc "[0-9]\.")
 
 if [[ "$INSTALLED_VERSION" == "$LATEST_VERSION" ]]
 then
-		[[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: $APPPATH is up to date at `ts`"
+		[[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: $APPPATH is up to date at `ts` (Version $INSTALLED_VERSION)"
 
 		exit 0
 fi
@@ -76,13 +76,13 @@ fi
 
 cd "$DL_DIR"
 
-URL=$(curl -sL "$RSS" | tr '"' '\012' | egrep '^http.*\.dmg$' | head -1)
+URL=$(curl -sfL "$RSS" | tr '"' '\012' | egrep '^http.*\.dmg$' | head -1)
 
 FILENAME="$URL:t"
 
 if [[ ! -e "$FILENAME" ]]
 then
-		curl --location --output "$FILENAME" "$URL"
+		curl --progress-bar --fail --location --output "$FILENAME" "$URL"
 fi
 
 ####|####|####|####|####|####|####|####|####|####|####|####|####|####|####
@@ -92,17 +92,23 @@ fi
 
 [[ "$VERBOSE" == "yes" ]] &&  echo "	$NAME: attempting to mount $FILENAME at `ts`"
 
-MNTPNT=$(echo -n "Y" | hdid -plist "$FILENAME" 2>/dev/null | fgrep '/Volumes/' | sed 's#</string>##g ; s#.*<string>##g')
+## Is there a EULA on the DMG? If so, use 'hdid'. Otherwise, use hdiutil
+# MNTPNT=$(echo -n "Y" | hdid -plist "$FILENAME" 2>/dev/null | fgrep '/Volumes/' | sed 's#</string>##g ; s#.*<string>##g')
+
+MNTPNT=$(hdiutil attach -nobrowse -plist "$FILENAME" 2>/dev/null \
+	| fgrep -A 1 '<key>mount-point</key>' \
+	| tail -1 \
+	| sed 's#</string>.*##g ; s#.*<string>##g')
 
 if [[ "$MNTPNT" == "" ]]
 then
-		echo "	$NAME: \$MNTPNT	is empty"
+		echo "$NAME: \$MNTPNT	is empty"
 		exit 1
 fi
 
 if [[ ! -d "$MNTPNT" ]]
 then
-		echo "	$NAME: $MNTPNT is not a directory"
+		echo "$NAME: $MNTPNT is not a directory"
 
 		exit 1
 fi
@@ -241,24 +247,22 @@ mv -f "$FILENAME" "$TRASH" && [[ "$VERBOSE" == "yes" ]] && echo "	$NAME: Moved $
 #
 #		Send Growl Notification
 #
-
-GROWL_PID=$(ps cx | awk -F' ' '/ Growl$/{print $1}')
-
-if [[ "$GROWL_PID" != "" ]]
+if [[ "$USE_GROWL" = "yes" ]]
 then
-	if (( $+commands[growlnotify] ))
+
+	GROWL_PID=$(ps cx | awk -F' ' '/ Growl$/{print $1}')
+
+	if [[ "$GROWL_PID" != "" ]]
 	then
-
-		if [[ "$USE_GROWL" = "yes" ]]
+		if (( $+commands[growlnotify] ))
 		then
-
 			growlnotify --sticky --message "Upgraded to version $LATEST_VERSION" --appIcon "XLD" --identifier "$NAME" "$NAME"
 
-		fi # USE_GROWL is YES
+		fi # Growlnotify is installed
 
-	fi # Growlnotify is installed
+	fi # Growl is running
 
-fi # Growl is running
+fi # USE_GROWL is YES
 
 [[ "$VERBOSE" == "yes" ]] &&  echo "$NAME Successfully installed/updated at `ts`"
 

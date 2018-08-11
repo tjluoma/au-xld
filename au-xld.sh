@@ -247,22 +247,10 @@ mv -f "$FILENAME" "$TRASH" && [[ "$VERBOSE" == "yes" ]] && echo "	$NAME: Moved $
 #
 #		Send Growl Notification
 #
-if [[ "$USE_GROWL" = "yes" ]]
+if [[ "$USE_GROWL" = "yes" ]] && { pgrep -xq Growl } && (( $+commands[growlnotify] ))
 then
-
-	GROWL_PID=$(ps cx | awk -F' ' '/ Growl$/{print $1}')
-
-	if [[ "$GROWL_PID" != "" ]]
-	then
-		if (( $+commands[growlnotify] ))
-		then
-			growlnotify --sticky --message "Upgraded to version $LATEST_VERSION" --appIcon "XLD" --identifier "$NAME" "$NAME"
-
-		fi # Growlnotify is installed
-
-	fi # Growl is running
-
-fi # USE_GROWL is YES
+	growlnotify --sticky --message "Upgraded to version $LATEST_VERSION" --appIcon "XLD" --identifier "$NAME" "$NAME"
+fi # if growl, etc.
 
 [[ "$VERBOSE" == "yes" ]] &&  echo "$NAME Successfully installed/updated at `ts`"
 
